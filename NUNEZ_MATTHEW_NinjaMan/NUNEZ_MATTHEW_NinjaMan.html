@@ -1,0 +1,301 @@
+<html>
+    <head>
+        <title>NinjaMan</title>
+        <style type="text/css">
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            .row {
+                line-height: 0;
+            }
+            .wall {
+                background-color: blue; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+            }
+            .sushi {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/sushi.png');
+                background-size: contain;
+            }
+            .onigiri {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/onigiri.png');
+                background-size: contain;
+            }
+            .blank {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+            }
+            #ninjaman {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/ninja.gif');
+                background-size: contain;
+                position: absolute;
+                left: 40px;
+                top: 40px;
+            }
+            #bluey {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/bluey.gif');
+                background-size: contain;
+                position: absolute;
+                left: 40px;
+                top: 40px;
+            }
+            #pinky {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/pinky.gif');
+                background-size: contain;
+                position: absolute;
+                left: 40px;
+                top: 40px;
+            }
+            #pumpky {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/pumpky.gif');
+                background-size: contain;
+                position: absolute;
+                left: 40px;
+                top: 40px;
+            }
+            #red {
+                background-color: black; 
+                height: 40px;
+                width: 40px;
+                display: inline-block;
+                background-image: url('img/red.gif');
+                background-size: contain;
+                position: absolute;
+                left: 40px;
+                top: 40px;
+            }
+            #lives {
+                font-size: 100px;
+                color: black; 
+                height: 300px;
+                width: 300px;
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="world"></div>
+        <div id="ninjaman"></div>
+        <div id="bluey"></div>
+        <!--
+        <div id="pinky"></div>
+        <div id="pumpky"></div>
+        <div id="red"></div>
+        -->
+        <div id="lives"></div>
+    </body>
+    <script type="text/javascript">
+        //Spawning Location
+        var ninjaman = {
+            x: 1,
+            y: 1
+        }
+
+        var bluey = {
+            x: 10,
+            y: 10
+        }
+        var pinky = {
+            x: 14,
+            y: 2
+        }
+        var pumpky = {
+            x: 2,
+            y: 10
+        }
+        var red = {
+            x: 5,
+            y: 6
+        }
+
+        var world = [], h = 12, w = 16, score = 0, lives = 3;
+
+        //World Generation
+        function worldGen(){
+            for (var i = 0 ; i < h; i++) {
+                world[i] = [];
+                for (var j = 0; j < w; j++) {
+                    if (j == 0 | j == w - 1){
+                        world[i][j] = 1;
+                    }
+                    else if (i == 0 | i == h - 1){
+                        world[i][j] = 1;
+                    }
+                    else {
+                        world[i][j] = Math.floor(Math.random()*4);
+                    }
+                }
+            }
+        }
+        worldGen()
+
+        
+        //World Generation Index
+        var worldDict = {
+            0: 'blank',
+            1: 'wall',
+            2: 'sushi',
+            3: 'onigiri'
+        }
+
+        //Draw the world
+        function drawWorld(){
+            output = '';
+
+            for(var row = 0; row < world.length; row++){
+                output += "<div class = 'row'></div>"
+                for (var x = 0; x < world[row].length; x++){
+                    output += "<div class = '" + worldDict[world[row][x]] +"'></div>"
+                }
+                output += '</div>';
+            }
+            document.getElementById("lives").innerHTML = "<div id = lives>"+ lives +" Lives</div>";
+            document.getElementById("world").innerHTML = output;
+        }
+
+        //Draw On Screen
+        drawWorld();
+        function drawBluey(){
+            document.getElementById("bluey").style.top = bluey.y * 40 + 'px'
+            document.getElementById("bluey").style.left = bluey.x * 40 + 'px'
+        }/*
+        drawBluey()
+        function drawPinky(){
+            document.getElementById("pinky").style.top = pinky.y * 40 + 'px'
+            document.getElementById("pinky").style.left = pinky.x * 40 + 'px'
+        }
+        drawPinky()
+        function drawPumpky(){
+            document.getElementById("pumpky").style.top = pumpky.y * 40 + 'px'
+            document.getElementById("pumpky").style.left = pumpky.x * 40 + 'px'
+        }
+        drawPumpky()
+        function drawRed(){
+            document.getElementById("red").style.top = red.y * 40 + 'px'
+            document.getElementById("red").style.left = red.x * 40 + 'px'
+        }
+        drawRed()*/
+
+        function drawNinjaman(){
+            document.getElementById("ninjaman").style.top = ninjaman.y * 40 + 'px'
+            document.getElementById("ninjaman").style.left = ninjaman.x * 40 + 'px'
+        }
+        drawNinjaman()
+
+        //Bluey Movement
+        function blueyMovement(){
+            if(bluey.x > ninjaman.x && world[bluey.y][bluey.x - 1] != 1){
+                bluey.x--;//Left
+            }
+            else if(bluey.x < ninjaman.x && world[bluey.y][bluey.x + 1] != 1){
+                bluey.x++;//Right
+            }
+            else if(bluey.y > ninjaman.y && world[bluey.y - 1][bluey.x] != 1){
+                bluey.y--;//Down
+            }
+            else if(bluey.y < ninjaman.y && world[bluey.y + 1][bluey.x] != 1){
+                bluey.y++;//Up
+            }
+            else {
+            }
+            while(bluey.y == ninjaman.y && bluey.x == ninjaman.x){
+                lives--;
+                console.log('Lives '+lives);
+                if (lives == 0){
+                    alert('Game Over')
+                    lives = 3;
+                }
+                else{
+                    alert('1 life lost');
+                }
+                worldGen()
+                ninjaman = {
+                    x: 1,
+                    y: 1
+                }
+                bluey = {
+                x: 10,
+                y: 10
+                }
+                drawWorld()
+                drawNinjaman()
+            }
+            drawBluey()
+            //console.log('bluey movement test');
+        }
+        setInterval(blueyMovement, 1000);
+
+        //Ninjaman Movement
+        document.onkeydown = function(e){
+            if(e.keyCode == 37){//LEFT
+                if(world[ninjaman.y][ninjaman.x - 1] != 1){
+                    ninjaman.x--;
+                }
+            }
+            if(e.keyCode == 39){//RIGHT
+                if(world[ninjaman.y][ninjaman.x + 1] != 1){
+                    ninjaman.x++;
+                }
+            }
+            if(e.keyCode == 38){//UP
+                if(world[ninjaman.y - 1][ninjaman.x] != 1){
+                    ninjaman.y--;
+                }
+            }
+            if(e.keyCode == 40){//DOWN
+                if(world[ninjaman.y + 1][ninjaman.x] != 1){
+                    ninjaman.y++;
+                }
+            }
+
+            //Score
+            if(world[ninjaman.y][ninjaman.x] == 2){
+                score += 10;
+            }
+            else if(world[ninjaman.y][ninjaman.x] == 3){
+                score += 5;
+            }
+            world[ninjaman.y][ninjaman.x] = 0;
+
+            //Update
+            drawNinjaman()
+            drawWorld()
+            console.log(score);
+        }
+
+        //(Basic) Keep Score of how many Sushi's NinjaMan eats sushu = 10pts
+        //(Basic) Add Onigiri = 5pts as an alternative food to eat 
+        //(Intermediate) Random world generated when loading the page
+        //(Advanced) Add Ghosts that chase NinjaMan around
+        //(Advanced) Give NinjaMan 3 lives where Game Over occurs when a ghost hits NinjaMan 3 times
+
+    </script>
+</html>
